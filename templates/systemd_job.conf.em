@@ -29,7 +29,8 @@
 
 [Unit]
 Description="bringup @(name)"
-After=network.target
+Wants=network-online.target
+After=network.target network-online.target
 
 [Service]
 Type=simple
