@@ -35,6 +35,8 @@ After=network.target network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/sbin/@(name)-start
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
