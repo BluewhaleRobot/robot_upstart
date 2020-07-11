@@ -30,15 +30,15 @@ could be defined for systemd, supervisor, launchd, or other systems.
 
 import em
 import os
-import StringIO
+from io import StringIO
 
 from catkin.find_in_workspaces import find_in_workspaces
 
 
 def detect_provider():
-    cmd = open('/proc/1/cmdline', 'rb').read().split('\x00')[0]
-    print os.path.realpath(cmd)
-    if 'systemd' in os.path.realpath(cmd):
+    cmd = open('/proc/1/cmdline', 'rb').read().split(b'\x00')[0]
+    print(os.path.realpath(cmd))
+    if b'systemd' in os.path.realpath(cmd):
         return Systemd
     return Upstart
 
@@ -146,12 +146,12 @@ class Upstart(Generic):
             self.root, "etc/ros", self.job.rosdistro, self.job.name + ".d")
 
     def _fill_template(self, template):
-        self.interpreter.output = StringIO.StringIO()
+        self.interpreter.output = StringIO()
         self.interpreter.reset()
         with open(find_in_workspaces(project="robot_upstart", path=template)[0]) as f:
             self.interpreter.file(f)
             return self.interpreter.output.getvalue()
-        self.set_job_path()
+        self._set_job_path()
 
 
 class Systemd(Generic):
@@ -223,9 +223,9 @@ class Systemd(Generic):
             self.root, "etc/ros", self.job.rosdistro, self.job.name + ".d")
 
     def _fill_template(self, template):
-        self.interpreter.output = StringIO.StringIO()
+        self.interpreter.output = StringIO()
         self.interpreter.reset()
         with open(find_in_workspaces(project="robot_upstart", path=template)[0]) as f:
             self.interpreter.file(f)
             return self.interpreter.output.getvalue()
-        self.set_job_path()
+        self._set_job_path()
